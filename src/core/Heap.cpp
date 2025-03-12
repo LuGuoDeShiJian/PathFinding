@@ -1,37 +1,35 @@
 #include "core/Heap.h"
-#include <algorithm>
-#include <utility>
 
 namespace luguo::PathFind
 {
-    Heap::Heap() : nodeCompare() {}
+    Heap::Heap() = default;
 
-    bool Heap::empty()
+    bool Heap::empty() const
     {
-        return nodes.empty();
+        return heap.empty();
     }
 
     void Heap::push(Node *node)
     {
-        nodes.push_back(node);
-        std::push_heap(nodes.begin(), nodes.end(), nodeCompare);
+        heap.push_back(node);
+        std::push_heap(heap.begin(), heap.end(), Comparator());
     }
 
     Node *Heap::pop()
     {
-        std::pop_heap(nodes.begin(), nodes.end(), nodeCompare);
-        Node *result = nodes.back();
-        nodes.pop_back();
-        return result;
+        std::pop_heap(heap.begin(), heap.end(), Comparator());
+        Node *top = heap.back();
+        heap.pop_back();
+        return top;
     }
 
     void Heap::updateItem(Node *node)
     {
-        auto it = std::find(nodes.begin(), nodes.end(), node);
-        if (it != nodes.end())
+        auto it = std::find(heap.begin(), heap.end(), node);
+        if (it != heap.end())
         {
-            nodes.erase(it);
-            push(node);
+            std::iter_swap(it, heap.end() - 1);
+            std::pop_heap(heap.begin(), heap.end(), Comparator());
         }
     }
 }

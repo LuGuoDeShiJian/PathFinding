@@ -1,36 +1,25 @@
 #include "core/Grid.h"
-
 namespace luguo::PathFind
 {
-    Grid::Grid(int width, int height, const std::vector<std::vector<bool>> &matrix) : width(width), height(height)
+    Grid::Grid(int width, int height, const std::vector<std::vector<bool>> &matrix)
+        : width(width), height(height)
     {
-        _buildNodes(matrix);
+        buildNodes(matrix);
     }
 
-    Grid::Grid(const std::vector<std::vector<bool>> &matrix) : width(matrix[0].size()), height(matrix.size())
+    Grid::Grid(const std::vector<std::vector<bool>> &matrix)
+        : width(matrix[0].size()), height(matrix.size())
     {
-        _buildNodes(matrix);
-    }
-    Grid::~Grid()
-    {
-        for (auto &row : nodes)
-        {
-            for (auto &node : row)
-            {
-                delete node;
-            }
-            row.clear();
-        }
-        nodes.clear();
+        buildNodes(matrix);
     }
 
-    Node *Grid::getNodeAt(int x, int y)
+    Grid::~Grid() = default;
+
+    Node *Grid::getNodeAt(int x, int y) const
     {
-        if (isInside(x, y))
-        {
-            return nodes[y][x];
-        }
-        return nullptr;
+        if (!isInside(x, y))
+            return nullptr;
+        return nodes[y][x].get();
     }
 
     bool Grid::isWalkableAt(int x, int y) const
@@ -40,148 +29,108 @@ namespace luguo::PathFind
 
     bool Grid::isInside(int x, int y) const
     {
+        // 检查网格是否有效初始化
         if (nodes.empty() || nodes[0].empty())
         {
-            std::cerr << "Grid is not properly initialized. Cannot determine if the coordinate is inside the grid." << std::endl;
             return false;
         }
-        return (x >= 0 && x < width) && (y >= 0 && y < height);
-    }
 
+        // 检查坐标范围（注意：Y轴是高度方向）
+        return (x >= 0 && x < width) &&
+               (y >= 0 && y < height);
+    }
     void Grid::setWalkableAt(int x, int y, bool walkable)
     {
         if (isInside(x, y))
-        {
             nodes[y][x]->walkable = walkable;
-        }
-        else
-        {
-            std::cerr << "Coordinate is outside the grid, cannot set walkable status." << std::endl;
-        }
     }
-    std::vector<Node *> Grid::getNeighbors(const Node *node, DiagonalMovement diagonalMovement)
+
+    std::vector<Node *> Grid::getNeighbors(const Node *node, DiagonalMovement movement) const
     {
         int x = node->x;
         int y = node->y;
         std::vector<Node *> neighbors;
-        bool s0 = false, d0 = false;
-        bool s1 = false, d1 = false;
-        bool s2 = false, d2 = false;
-        bool s3 = false, d3 = false;
 
-        // ↑
-        if (isWalkableAt(x, y - 1))
-        {
-            neighbors.push_back(nodes[y - 1][x]);
-            s0 = true;
-        }
-        // →
-        if (isWalkableAt(x + 1, y))
-        {
-            neighbors.push_back(nodes[y][x + 1]);
-            s1 = true;
-        }
-        // ↓
-        if (isWalkableAt(x, y + 1))
-        {
-            neighbors.push_back(nodes[y + 1][x]);
-            s2 = true;
-        }
-        // ←
-        if (isWalkableAt(x - 1, y))
-        {
-            neighbors.push_back(nodes[y][x - 1]);
-            s3 = true;
-        }
+        // Precompute walkability for all 8 directions
+        bool dirs[8] = {
+            isWalkableAt(x, y - 1),     // Up
+            isWalkableAt(x + 1, y),     // Right
+            isWalkableAt(x, y + 1),     // Down
+            isWalkableAt(x - 1, y),     // Left
+            isWalkableAt(x - 1, y - 1), // Top-left
+            isWalkableAt(x + 1, y - 1), // Top-right
+            isWalkableAt(x + 1, y + 1), // Bottom-right
+            isWalkableAt(x - 1, y + 1)  // Bottom-left
+        };
 
-        switch (diagonalMovement)
+        static const int dx[8] = {0, 1, 0, -1, -1, 1, 1, -1};
+        static const int dy[8] = {-1, 0, 1, 0, -1, -1, 1, 1};
+
+        switch (movement)
         {
         case DiagonalMovement::Never:
-            return neighbors;
+            for (int i = 0; i < 4; ++i)
+                if (dirs[i])
+                    neighbors.push_back(nodes[y + dy[i]][x + dx[i]].get());
+            break;
         case DiagonalMovement::OnlyWhenNoObstacles:
-            d0 = s3 && s0;
-            d1 = s0 && s1;
-            d2 = s1 && s2;
-            d3 = s2 && s3;
-            break;
+            for (int i = 4; i < 8; ++i)
+                if (dirs[i] && (dirs[i - 4] || dirs[i - 3] || dirs[i - 2] || dirs[i - 1]))
+                    neighbors.push_back(nodes[y + dy[i]][x + dx[i]].get());
+            [[fallthrough]];
         case DiagonalMovement::IfAtMostOneObstacle:
-            d0 = s3 || s0;
-            d1 = s0 || s1;
-            d2 = s1 || s2;
-            d3 = s2 || s3;
-            break;
+            for (int i = 4; i < 8; ++i)
+                if (dirs[i] && (dirs[i - 4] + dirs[i - 3] + dirs[i - 2] + dirs[i - 1]) <= 1)
+                    neighbors.push_back(nodes[y + dy[i]][x + dx[i]].get());
+            [[fallthrough]];
         case DiagonalMovement::Always:
-            d0 = true;
-            d1 = true;
-            d2 = true;
-            d3 = true;
+            for (int i = 0; i < 8; ++i)
+                if (dirs[i])
+                    neighbors.push_back(nodes[y + dy[i]][x + dx[i]].get());
             break;
-        default:
-            std::cerr << "Incorrect value of diagonalMovement" << std::endl;
-            return neighbors;
-        }
-
-        // ↖
-        if (d0 && isWalkableAt(x - 1, y - 1))
-        {
-            neighbors.push_back(nodes[y - 1][x - 1]);
-        }
-        // ↗
-        if (d1 && isWalkableAt(x + 1, y - 1))
-        {
-            neighbors.push_back(nodes[y - 1][x + 1]);
-        }
-        // ↘
-        if (d2 && isWalkableAt(x + 1, y + 1))
-        {
-            neighbors.push_back(nodes[y + 1][x + 1]);
-        }
-        // ↙
-        if (d3 && isWalkableAt(x - 1, y + 1))
-        {
-            neighbors.push_back(nodes[y + 1][x - 1]);
         }
 
         return neighbors;
     }
 
-    Grid *Grid::clone()
+    Grid *Grid::clone() const
     {
-        std::vector<std::vector<bool>> matrix(height, std::vector<bool>(width));
-        for (int i = 0; i < height; ++i)
-        {
-            for (int j = 0; j < width; ++j)
-            {
-                matrix[i][j] = nodes[i][j]->walkable;
-            }
-        }
-
-        Grid *newGrid = new Grid(width, height, matrix);
+        auto newGrid = new Grid(width, height);
+        for (int y = 0; y < height; ++y)
+            for (int x = 0; x < width; ++x)
+                newGrid->nodes[y][x]->walkable = nodes[y][x]->walkable;
         return newGrid;
     }
 
-    void Grid::_buildNodes(const std::vector<std::vector<bool>> &matrix)
+    int Grid::getWidth() const
     {
-        nodes.resize(height);
-        for (int i = 0; i < height; ++i)
+        return width;
+    }
+    int Grid::getHeight() const
+    {
+        return height;
+    }
+    int Grid::getWalkableCount() const
+    {
+        int count = 0;
+        for (const auto &row : nodes)
         {
-            nodes[i].resize(width);
-            for (int j = 0; j < width; ++j)
+            for (const auto &node : row)
             {
-                nodes[i][j] = new Node(j, i);
+                if (node->walkable)
+                    count++;
             }
         }
-
-        if (!matrix.empty() && matrix.size() == height && matrix[0].size() == width)
+        return count;
+    }
+    void Grid::buildNodes(const std::vector<std::vector<bool>> &matrix)
+    {
+        nodes.resize(height);
+        for (int y = 0; y < height; ++y)
         {
-            for (int i = 0; i < height; ++i)
-            {
-                for (int j = 0; j < width; ++j)
-                {
-                    // 0表示可通行，1表示不可通行
-                    nodes[i][j]->walkable = matrix[i][j] == 0;
-                }
-            }
+            nodes[y].resize(width);
+            for (int x = 0; x < width; ++x)
+                nodes[y][x] = std::make_unique<Node>(x, y, matrix.empty() ? true : matrix[y][x] == 0);
         }
     }
 }

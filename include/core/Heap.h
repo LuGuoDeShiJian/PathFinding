@@ -1,29 +1,27 @@
 #pragma once
-#include "Node.h"
 #include <vector>
+#include <algorithm>
+#include "Node.h"
 
 namespace luguo::PathFind
 {
-    /**
-     * Heap 优先队列，用于存储节点，按照节点的 f 值进行排序
-     */
     class Heap
     {
     public:
         Heap();
-        bool empty();
+        bool empty() const;
         void push(Node *node);
         Node *pop();
         void updateItem(Node *node);
 
     private:
-        std::vector<Node *> nodes;
-        struct NodeCompare
+        std::vector<Node *> heap;
+        struct Comparator
         {
-            bool operator()(Node *a, Node *b) const
+            bool operator()(const Node *a, const Node *b) const
             {
                 return a->f > b->f;
             }
-        } nodeCompare;
+        };
     };
 }

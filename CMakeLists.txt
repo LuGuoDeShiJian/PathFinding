@@ -32,3 +32,6 @@ target_include_directories(PathFind PUBLIC
 )
 add_executable(PathFindTest test/test.cpp)
 target_link_libraries(PathFindTest PathFind)
+
+add_executable(PathFindTest2 test/test2.cpp)
+target_link_libraries(PathFindTest2 PathFind)
