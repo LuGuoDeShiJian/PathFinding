@@ -1,12 +1,12 @@
-#include "finders/JPFAlwaysMoveDiagonally.h"
+#include "finders/JPFAlways.h"
 
 namespace luguo::PathFind
 {
     // 构造函数实现，调用基类构造函数完成初始化相关操作
-    JPFAlwaysMoveDiagonally::JPFAlwaysMoveDiagonally(Grid *grid, Heuristic::Type type, bool trackJumpRecursion) : JumpPointFinderBase(grid, type, trackJumpRecursion) {}
+    JPFAlways::JPFAlways(Grid *grid, Heuristic::Type type, bool trackJumpRecursion) : JumpPointFinderBase(grid, type, trackJumpRecursion) {}
 
     // 重写_jump函数，按照总是沿对角线移动的规则实现跳跃点搜索逻辑
-    std::vector<int> JPFAlwaysMoveDiagonally::_jump(int x, int y, int px, int py)
+    std::vector<int> JPFAlways::_jump(int x, int y, int px, int py)
     {
         Grid *grid = this->grid;
         int dx = x - px;
@@ -67,7 +67,7 @@ namespace luguo::PathFind
     }
 
     // 重写_findNeighbors函数，依据总是沿对角线移动的规则查找给定节点的邻居节点
-    std::vector<std::pair<int, int>> JPFAlwaysMoveDiagonally::_findNeighbors(Node *node)
+    std::vector<std::pair<int, int>> JPFAlways::_findNeighbors(Node *node)
     {
         Node *parent = node->parent;
         int x = node->x;

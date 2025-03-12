@@ -1,10 +1,10 @@
 #pragma once
-#include "finders/IDAStarFinder.h"
+#include "finders/IDAStar.h"
 #include "finders/JumpPointFinder.h"
-#include "finders/AStarFinder.h"
-#include "finders/BestFirstFinder.h"
-#include "finders/BreadthFirstFinder.h"
-#include "finders/DijkstraFinder.h"
+#include "finders/AStar.h"
+#include "finders/BestFirst.h"
+#include "finders/BreadthFirst.h"
+#include "finders/Dijkstra.h"
 namespace luguo::PathFind
 {
     enum class PathFindType
@@ -35,12 +35,12 @@ namespace luguo::PathFind
         DIJKFind
     };
     typedef JumpPointFinder JPSFind;
-    typedef IDAStarFinder IDAFind;
+    typedef IDAStar IDAFind;
     typedef JumpPointFinderBase JPSBase;
-    typedef AStarFinder AStarFind;
-    typedef BestFirstFinder BestFind;
-    typedef BreadthFirstFinder BFSFind;
-    typedef DijkstraFinder DIJKFind;
+    typedef AStar AStarFind;
+    typedef BestFirst BestFind;
+    typedef BreadthFirst BFSFind;
+    typedef Dijkstra DIJKFind;
 
     /**
      *  @brief 返回指定寻路算法类型的名称

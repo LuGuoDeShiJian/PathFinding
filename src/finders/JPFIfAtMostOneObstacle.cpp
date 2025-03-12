@@ -1,12 +1,12 @@
-#include "finders/JPFMoveDiagonallyIfAtMostOneObstacle.h"
+#include "finders/JPFIfAtMostOneObstacle.h"
 
 namespace luguo::PathFind
 {
     // 构造函数实现，通过调用基类构造函数完成相关初始化工作
-    JPFMoveDiagonallyIfAtMostOneObstacle::JPFMoveDiagonallyIfAtMostOneObstacle(Grid *grid, Heuristic::Type type, bool trackJumpRecursion) : JumpPointFinderBase(grid, type, trackJumpRecursion) {}
+    JPFIfAtMostOneObstacle::JPFIfAtMostOneObstacle(Grid *grid, Heuristic::Type type, bool trackJumpRecursion) : JumpPointFinderBase(grid, type, trackJumpRecursion) {}
 
     // 重写_jump函数，按照特定规则（对角线移动仅当至多有一个障碍物时）进行跳跃点搜索逻辑的实现
-    std::vector<int> JPFMoveDiagonallyIfAtMostOneObstacle::_jump(int x, int y, int px, int py)
+    std::vector<int> JPFIfAtMostOneObstacle::_jump(int x, int y, int px, int py)
     {
         Grid *grid = this->grid;
         int dx = x - px;
@@ -75,7 +75,7 @@ namespace luguo::PathFind
     }
 
     // 重写_findNeighbors函数，依据特定规则（对角线移动仅当至多有一个障碍物时）查找给定节点的邻居节点
-    std::vector<std::pair<int, int>> JPFMoveDiagonallyIfAtMostOneObstacle::_findNeighbors(Node *node)
+    std::vector<std::pair<int, int>> JPFIfAtMostOneObstacle::_findNeighbors(Node *node)
     {
         Node *parent = node->parent;
         int x = node->x;

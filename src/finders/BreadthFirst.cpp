@@ -1,10 +1,10 @@
-#include "finders/BreadthFirstFinder.h"
+#include "finders/BreadthFirst.h"
 #include <queue>
 
 namespace luguo::PathFind
 {
-    BreadthFirstFinder::BreadthFirstFinder(DiagonalMovement diagonalMovement) : diagonalMovement(diagonalMovement) {}
-    std::vector<Node *> BreadthFirstFinder::findPath(int startX, int startY, int endX, int endY, Grid *grid)
+    BreadthFirst::BreadthFirst(DiagonalMovement diagonalMovement) : diagonalMovement(diagonalMovement) {}
+    std::vector<Node *> BreadthFirst::findPath(int startX, int startY, int endX, int endY, Grid *grid)
     {
         std::queue<Node *> openList;
         Node *startNode = grid->getNodeAt(startX, startY);

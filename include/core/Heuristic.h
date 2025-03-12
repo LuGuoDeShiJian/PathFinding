@@ -24,7 +24,7 @@ namespace luguo::PathFind
      */
     double chebyshev(int dx, int dy);
     /**
-     * @brief 启发式函数类，用于设置和使用启发式函数
+     * @brief 启发式函数，用于设置和使用启发式函数
      */
     class Heuristic
     {

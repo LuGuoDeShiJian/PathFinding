@@ -29,15 +29,9 @@ namespace luguo::PathFind
 
     bool Grid::isInside(int x, int y) const
     {
-        // 检查网格是否有效初始化
         if (nodes.empty() || nodes[0].empty())
-        {
             return false;
-        }
-
-        // 检查坐标范围（注意：Y轴是高度方向）
-        return (x >= 0 && x < width) &&
-               (y >= 0 && y < height);
+        return (x >= 0 && x < width) && (y >= 0 && y < height);
     }
     void Grid::setWalkableAt(int x, int y, bool walkable)
     {

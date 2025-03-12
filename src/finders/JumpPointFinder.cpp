@@ -10,19 +10,19 @@ namespace luguo::PathFind
     {
         if (diagonalMovement == DiagonalMovement::Never)
         {
-            return new JPFNeverMoveDiagonally(grid, heuristicType);
+            return new JPFNever(grid, heuristicType);
         }
         else if (diagonalMovement == DiagonalMovement::Always)
         {
-            return new JPFAlwaysMoveDiagonally(grid, heuristicType);
+            return new JPFAlways(grid, heuristicType);
         }
         else if (diagonalMovement == DiagonalMovement::OnlyWhenNoObstacles)
         {
-            return new JPFMoveDiagonallyIfNoObstacles(grid, heuristicType);
+            return new JPFNoObstacles(grid, heuristicType);
         }
         else
         {
-            return new JPFMoveDiagonallyIfAtMostOneObstacle(grid, heuristicType);
+            return new JPFIfAtMostOneObstacle(grid, heuristicType);
         }
     }
 }

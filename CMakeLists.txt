@@ -13,15 +13,15 @@ add_library(PathFind SHARED
     src/core/Heuristic.cpp
     src/core/Node.cpp
     src/core/Util.cpp
-    src/finders/AStarFinder.cpp
-    src/finders/BestFirstFinder.cpp
-    src/finders/BreadthFirstFinder.cpp
-    src/finders/DijkstraFinder.cpp
-    src/finders/IDAStarFinder.cpp
-    src/finders/JPFAlwaysMoveDiagonally.cpp
-    src/finders/JPFMoveDiagonallyIfAtMostOneObstacle.cpp
-    src/finders/JPFMoveDiagonallyIfNoObstacles.cpp
-    src/finders/JPFNeverMoveDiagonally.cpp
+    src/finders/AStar.cpp
+    src/finders/BestFirst.cpp
+    src/finders/BreadthFirst.cpp
+    src/finders/Dijkstra.cpp
+    src/finders/IDAStar.cpp
+    src/finders/JPFAlways.cpp
+    src/finders/JPFIfAtMostOneObstacle.cpp
+    src/finders/JPFNoObstacles.cpp
+    src/finders/JPFNever.cpp
     src/finders/JumpPointFinder.cpp
     src/finders/JumpPointFinderBase.cpp
     src/PathFind.cpp

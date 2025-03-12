@@ -26,7 +26,9 @@ namespace luguo::PathFind
     {
         JPSFind F(grid, heuristicType, diagonalMovement);
         JPSBase *FP = F.createFinder();
-        return FP->findPath(start->x, start->y, end->x, end->y);
+        auto FH = FP->findPath(start->x, start->y, end->x, end->y);
+        delete FP;
+        return FH;
     }
     std::vector<Node *> IDAfind(Node *start, Node *end, Grid *grid, const Heuristic::Type &heuristicType, DiagonalMovement diagonalMovement, double weight)
     {

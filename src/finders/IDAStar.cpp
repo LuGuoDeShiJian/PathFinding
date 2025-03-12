@@ -1,11 +1,11 @@
-#include "finders/IDAStarFinder.h"
+#include "finders/IDAStar.h"
 
 namespace luguo::PathFind
 {
     // 构造函数实现，根据传入参数初始化类的成员变量，并根据对角线移动规则确定合适的启发式函数类型
-    IDAStarFinder::IDAStarFinder(const DiagonalMovement diagonalMovement,
-                                 const Heuristic::Type heuristicType, const double weight,
-                                 const bool trackRecursion, const int timeLimit)
+    IDAStar::IDAStar(const DiagonalMovement diagonalMovement,
+                     const Heuristic::Type heuristicType, const double weight,
+                     const bool trackRecursion, const int timeLimit)
         : diagonalMovement(diagonalMovement),
           heuristics(),
           weight(weight), trackRecursion(trackRecursion), timeLimit(timeLimit),
@@ -15,21 +15,21 @@ namespace luguo::PathFind
     }
 
     // 计算启发式距离的辅助函数实现，依据启发式函数类型计算两节点坐标差值对应的距离估计值
-    double IDAStarFinder::heuristic(const Node *a, const Node *b)
+    double IDAStar::heuristic(const Node *a, const Node *b)
     {
         return heuristics.heuristic(std::abs(b->x - a->x), std::abs(b->y - a->y));
     }
 
     // 计算移动代价的辅助函数实现，根据节点坐标判断是水平/垂直移动还是对角线移动，返回相应代价
-    double IDAStarFinder::cost(const Node *from, const Node *to)
+    double IDAStar::cost(const Node *from, const Node *to)
     {
         return (from->x == to->x || from->y == to->y) ? 1 : std::sqrt(2);
     }
 
     // 核心的递归搜索函数实现，遵循IDA*算法的迭代加深搜索逻辑进行路径查找
-    std::variant<double, Node *> IDAStarFinder::recursiveSearch(const Node *node, double g, double cutoff,
-                                                                std::vector<Node *> &route, int depth,
-                                                                Grid *grid, const Node *endNode)
+    std::variant<double, Node *> IDAStar::recursiveSearch(const Node *node, double g, double cutoff,
+                                                          std::vector<Node *> &route, int depth,
+                                                          Grid *grid, const Node *endNode)
     {
         static int nodesVisited = 0;
         nodesVisited++;
@@ -103,7 +103,7 @@ namespace luguo::PathFind
     }
 
     // 对外提供的寻路函数实现，通过不断迭代加深搜索深度尝试找到从起始到目标的路径
-    std::vector<Node *> IDAStarFinder::findPath(int startX, int startY, int endX, int endY, Grid *grid)
+    std::vector<Node *> IDAStar::findPath(int startX, int startY, int endX, int endY, Grid *grid)
     {
         startTime = std::clock();
         Node *startNode = grid->getNodeAt(startX, startY);

@@ -1,7 +1,6 @@
 #pragma once
 namespace luguo::PathFind
 {
-    //  定义一个枚举类DiagonalMovement，用于表示对角线移动的策略
     enum class DiagonalMovement
     {
         /**

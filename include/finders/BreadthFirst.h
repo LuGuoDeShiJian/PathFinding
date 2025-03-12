@@ -3,10 +3,10 @@
 namespace luguo::PathFind
 {
 
-    class BreadthFirstFinder
+    class BreadthFirst
     {
     public:
-        BreadthFirstFinder(DiagonalMovement diagonalMovement = DiagonalMovement::Never);
+        BreadthFirst(DiagonalMovement diagonalMovement = DiagonalMovement::Never);
         std::vector<Node *> findPath(int startX, int startY, int endX, int endY, Grid *grid);
 
     private:

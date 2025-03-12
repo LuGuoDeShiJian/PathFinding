@@ -1,18 +1,18 @@
-#include "finders/AStarFinder.h"
+#include "finders/AStar.h"
 
 namespace luguo::PathFind
 {
-    AStarFinder::AStarFinder(const DiagonalMovement diagonalMovement, const Heuristic::Type heuristicType, const double weight)
+    AStar::AStar(const DiagonalMovement diagonalMovement, const Heuristic::Type heuristicType, const double weight)
         : diagonalMovement(diagonalMovement), weight(weight), heuristics()
     {
         heuristics.setHeuristicFunction(heuristicType);
     }
-    double AStarFinder::heuristic(const Node *a, const Node *b)
+    double AStar::heuristic(const Node *a, const Node *b)
     {
         return heuristics.heuristic(std::abs(b->x - a->x), std::abs(b->y - a->y));
     }
 
-    std::vector<Node *> AStarFinder::findPath(int startX, int startY, int endX, int endY, Grid *grid)
+    std::vector<Node *> AStar::findPath(int startX, int startY, int endX, int endY, Grid *grid)
     {
         Node *startNode = grid->getNodeAt(startX, startY);
         Node *endNode = grid->getNodeAt(endX, endY);

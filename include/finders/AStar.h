@@ -2,12 +2,12 @@
 #include "../core/Util.h"
 namespace luguo::PathFind
 {
-    class AStarFinder
+    class AStar
     {
     public:
-        AStarFinder(const DiagonalMovement diagonalMovement = DiagonalMovement::Never,
-                    const Heuristic::Type heuristicType = Heuristic::Type::MANHATTAN,
-                    const double weight = 1);
+        AStar(const DiagonalMovement diagonalMovement = DiagonalMovement::Never,
+              const Heuristic::Type heuristicType = Heuristic::Type::MANHATTAN,
+              const double weight = 1);
         std::vector<Node *> findPath(int startX, int startY, int endX, int endY, Grid *grid);
 
     private:

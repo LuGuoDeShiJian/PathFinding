@@ -2,7 +2,5 @@
 namespace luguo::PathFind
 {
     Node::Node(int x, int y, bool walkable)
-        : x(x), y(y), walkable(walkable)
-    {
-    }
+        : x(x), y(y), walkable(walkable) {}
 }
